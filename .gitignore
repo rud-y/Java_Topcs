@@ -1,1 +1,8 @@
+# IDEA generated files
 .idea/
+*.iml
+*.iws
+*.ipr
+
+# Build/Output directories
+**/out/
