@@ -9,6 +9,10 @@ class ColorThreadFactory implements ThreadFactory {
 
     private String threadName;
 
+    private int colorValue = 1;
+
+    public ColorThreadFactory() {}
+
     public ColorThreadFactory(ThreadColor color) {
         this.threadName = color.name();
     }
@@ -17,7 +21,17 @@ class ColorThreadFactory implements ThreadFactory {
     public Thread newThread(Runnable r) {
 
         Thread thread = new Thread(r);
-        thread.setName(threadName);
+        //
+        String name = threadName;
+        if (name == null) {
+            name = ThreadColor.values()[colorValue].name();
+        }
+
+        if (++colorValue > (ThreadColor.values().length - 1)) {
+            colorValue = 1;
+        }
+
+        thread.setName(name);
         return thread;
     }
 }
@@ -25,6 +39,57 @@ class ColorThreadFactory implements ThreadFactory {
 public class Main {
 
     public static void main(String[] args) {
+        var multiExecutor = Executors.newCachedThreadPool();
+        try{
+            multiExecutor.execute(
+                    () -> Main.sum(1,10,1,"red")
+            );
+            multiExecutor.execute(
+                    () -> Main.sum(10, 100, 10, "blue")
+            );
+            multiExecutor.execute(
+                    () -> Main.sum(2, 20, 2, "green")
+            );
+
+            multiExecutor.execute(
+                    () -> Main.sum(1,10,1,"yellow")
+            );
+            multiExecutor.execute(
+                    () -> Main.sum(10, 100, 10, "cyan")
+            );
+            multiExecutor.execute(
+                    () -> Main.sum(2, 20, 2, "orange")
+            );
+
+            try{
+                TimeUnit.SECONDS.sleep(1);
+
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            System.out.println("New TASKS will get exectuted");
+            for (var color: new String[]{"red", "blue", "green", "yellow"}) {
+                multiExecutor.execute(() -> Main.sum(1, 10, 1, color));
+                
+            }
+    } finally {
+            multiExecutor.shutdown();
+        }
+    }
+
+    public static void fixedmain(String[] args) {
+
+        int count = 6;
+        var multiExecutor = Executors.newFixedThreadPool(count, new ColorThreadFactory());
+
+        for (int i = 0; i < count; i++) {
+            multiExecutor.execute(Main::countDown);
+        }
+        multiExecutor.shutdown();
+    }
+
+    public static void singlemain(String[] args) {
 
         var blueExecutor = Executors.newSingleThreadExecutor(new ColorThreadFactory(ThreadColor.ANSI_BLUE));
         blueExecutor.execute(Main:: countDown);
@@ -117,7 +182,24 @@ public class Main {
 
         String color = threadColor.color();
         for (int i = 20; i >=0; i--) {
-            System.out.println(color + " " + threadName.replace("ANSI_", "") + i);
+            System.out.println(color + " " + threadName.replace("ANSI_", "") + " " + i);
         }
     }
+
+    public static void sum(int start, int end, int delta, String colorString) {
+        var threadColor = ThreadColor.ANSI_RESET;
+        try {
+            threadColor = ThreadColor.valueOf("ANSI_" +  colorString.toUpperCase());
+        } catch (IllegalArgumentException ignore) {
+            // User can pass a bad color name
+        }
+        
+        String color  = threadColor.color();
+        int sum = 0;
+        for (int i = start; i < end; i += delta) {
+            sum += i;
+        }
+        System.out.println(color + Thread.currentThread().getName() + ", " + colorString + " " + sum);
+    }
+
 }
