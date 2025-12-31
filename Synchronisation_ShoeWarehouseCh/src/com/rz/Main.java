@@ -14,9 +14,9 @@ public class Main {
 
         ShoeWarehouse warehouse = new ShoeWarehouse();
         Thread producerThread = new Thread(() -> {
-            for(int i = 0; i < 10; i++) {
+            for(int i = 0; i < 6; i++) {
                 warehouse.receiveOrder(new Order(
-                        random.nextLong(1000000, 9999999),
+                        random.nextLong(1000, 9999),
                         ShoeWarehouse.PRODUCT_LIST[random.nextInt(0, 5)],
                         random.nextInt(1, 4)));
             }
@@ -25,7 +25,7 @@ public class Main {
 
         for(int x = 0; x < 2; x++) {
             Thread consumerThread = new Thread(() -> {
-                for (int j = 0; j < 5; j++) {
+                for (int j = 0; j < 2; j++) {
                     Order item = warehouse.fulfillOrder();
                 }
             });
