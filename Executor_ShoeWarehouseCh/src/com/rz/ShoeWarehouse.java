@@ -10,6 +10,7 @@ public class ShoeWarehouse {
     private final ExecutorService fulfillmentService;
 
     public final static String[] PRODUCT_LIST = {"Running shoes", "Sandals", "Slippers", "Boots", "High Tops"};
+//    public final static List<String> PRODUCT_LIST = List.of("Running shoes", "Sandals", "Slippers", "Boots", "High Tops");
 
     public ShoeWarehouse() {
         this.shippingItems = new ArrayList<>();
