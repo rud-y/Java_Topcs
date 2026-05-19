@@ -1,23 +1,11 @@
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static java.lang.reflect.Array.*;
+
 public class Main {
     static void main() {
-        String[] strings = {"One", "Two", "Three", "Four"};
-        var firstStream = Arrays.stream(strings)
-                .sorted(Comparator.reverseOrder());
-//                .forEach(System.out::println);
-
-        var secondStream = Stream.of("Nine", "Eight", "Seven", "Six")
-                .map(String::toUpperCase);
-//                .forEach(System.out::println);
-
-
-        Stream.concat(secondStream, firstStream)
-                .map(s -> s.charAt(0) + " - " + s);
-//                .forEach(System.out::println);
-
-
         List<String> bingoPool = new ArrayList<>(75);
         int start = 1;
         for (char c : "BINGO".toCharArray()) {
@@ -30,11 +18,11 @@ public class Main {
         }
 
         Collections.shuffle(bingoPool);
+        System.out.println("Collections.shuffle----");
         for (int i = 0; i < 15; i++) {
             System.out.println(bingoPool.get(i));
         }
         System.out.println("-----------------------");
-
 //        List<String> firstOnes = bingoPool.subList(0, 15);
         List<String> firstOnes = new ArrayList<>(bingoPool.subList(0, 15));
         firstOnes.sort(Comparator.naturalOrder());
@@ -46,8 +34,10 @@ public class Main {
             }
             return s;
         } );
+
         System.out.println("\n--------------------------");
 
+        // Stream has no effect on the original 'bingoPool'
         bingoPool.stream()
                 .limit(15)
                 .filter(s -> s.indexOf("G") == 0 || s.indexOf("O") == 0)
@@ -55,6 +45,37 @@ public class Main {
                 .sorted()
                 .forEach(s -> System.out.print(s + " "));
 
+        System.out.println("\n--------------------------");
+
+
+        // DIFFERENT STREAM SOURCES AND DIFFERENT OPERATIONS ON STREAMS
+        String[] someStrings = { "One", "Two", "Three"};
+        var firstStream = Arrays.stream(someStrings)
+                .sorted(Comparator.reverseOrder());
+//                .forEach(System.out::println);
+
+        var secondStream = Stream.of("Six","Five","Four")
+                .map(String::toUpperCase);
+//                .forEach(System.out::println);
+
+        Stream.concat(firstStream, secondStream)
+                .forEach(s -> System.out.println(s.charAt(0) + " - " + s));
+
+
+        Map<Character, int[]> myMap = new LinkedHashMap<>();
+        int bingoIndex = 1;
+        for (char c : "BINGO".toCharArray()) {
+            int[]numbers = new int[15];
+            int labelNo = bingoIndex;
+            Arrays.setAll(numbers, i -> i + labelNo);
+            myMap.put(c, numbers);
+            bingoIndex += 15;
+        }
+        myMap.entrySet()
+                .stream()
+                .map(e -> e.getKey() + " has value : " + e.getValue()[0] + " - " +
+                        e.getValue()[e.getValue().length - 1])
+                .forEach(System.out::println);
 
     }
 }
