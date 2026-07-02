@@ -1,3 +1,4 @@
+package com.rz;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Stream;
@@ -5,7 +6,7 @@ import java.util.stream.Stream;
 import static java.lang.reflect.Array.*;
 
 public class Main {
-    static void main() {
+    public static void main(String[] args) {
         List<String> bingoPool = new ArrayList<>(75);
         int start = 1;
         for (char c : "BINGO".toCharArray()) {
@@ -14,7 +15,7 @@ public class Main {
 //                System.out.println(c  + " " + i);
             }
 
-        start +=15;
+            start +=15;
         }
 
         Collections.shuffle(bingoPool);
@@ -78,4 +79,6 @@ public class Main {
                 .forEach(System.out::println);
 
     }
+
+
 }
