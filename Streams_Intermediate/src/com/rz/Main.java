@@ -17,7 +17,7 @@ public class Main {
 //                .dropWhile(i -> Character.toUpperCase(i) <= 'J')
 //                .takeWhile(i -> i < 'a')
 //                .skip(5)
-//                .filter(i -> Character.toUpperCase(i) > 'D')
+                .filter(i -> Character.toUpperCase(i) > 'D')
                 .forEach(d -> System.out.printf("%c ", d));
 
 
@@ -35,7 +35,7 @@ public class Main {
         int max = 50;
         int randomNum = random.nextInt(max - min) + min;
 
-        System.out.println(randomNum);
+        System.out.println("Random num 10-50: " + randomNum);
 
         System.out.println();
         int maxSeats = 100;
@@ -43,11 +43,14 @@ public class Main {
         var stream = Stream.iterate(0, i -> i < maxSeats, i -> i + 1)
                 .map(i -> new Seat((char) ('A' + i / seatsInRow),
                         i % seatsInRow + 1))
-//                .sorted(Comparator.comparing(Seat::toString));
-//                .thenComparing(Seat::price));
-                .mapToDouble(Seat::price)
-                .boxed()
-                .map(val -> "%.2f".formatted(val));
+                .skip(5)
+                .limit(10)
+                .peek(s -> System.out.println("--> " +  s) )
+                .sorted(Comparator.comparing(Seat::price)
+                    .thenComparing(Seat::toString));
+//                .mapToDouble(Seat::price)
+//                .boxed()
+//                .map("%.2f"::formatted);
         stream.forEach(System.out::println);
 
     }
