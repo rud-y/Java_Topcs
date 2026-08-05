@@ -42,6 +42,11 @@ public class StreamTerminal {
             .allMatch(SeatTwo::isReserved);
     System.out.println("fullyBooked : " + fullyBooked);
 
+    boolean noneBooked = Arrays
+            .stream(seats)
+            .noneMatch(SeatTwo::isReserved);
+    System.out.println("noneBooked : " + noneBooked);
+
   }
 }
 
