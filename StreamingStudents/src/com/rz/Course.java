@@ -9,7 +9,7 @@ public record Course(String courseCode, String title, int lectureCount) {
   }
 
   public Course(String courseCode, String title) {
-    this(courseCode, title, 40);
+    this(courseCode, title, 20);
   }
 
   @Override
@@ -17,3 +17,4 @@ public record Course(String courseCode, String title, int lectureCount) {
     return "%s / %s".formatted(courseCode, title);
   }
 }
+

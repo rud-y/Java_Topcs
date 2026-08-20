@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Student {
 
@@ -83,18 +84,16 @@ public class Student {
   }
 
   public int getMonthsSinceActive(String courseCode) {
-
     CourseEngagement info = studentEngagementMap.get(courseCode);
     return info == null ? 0 : info.getMonthsSinceActive();
   }
 
   public int getMonthsSinceActive() {
-
     int inactiveMonths = (LocalDate.now().getYear() - 2025) * 12;
     for (String key: studentEngagementMap.keySet()) {
       inactiveMonths = Math.min(inactiveMonths, getMonthsSinceActive(key));
     }
-    return  inactiveMonths;
+    return inactiveMonths;
   }
 
   public double getPercentComplete(String courseCode) {
@@ -109,9 +108,9 @@ public class Student {
     }
   }
 
-
   private static String getRandomVal(String... data) {
-    return data[random.nextInt(data.length)];
+    return data[ThreadLocalRandom.current().nextInt
+            (data.length)];
   }
 
   public static Student getRandomStudent(Course... courses) {
@@ -119,17 +118,22 @@ public class Student {
 
     Student student = new Student(
             getRandomVal("AU", "CA", "FR", "IT", "SK", "GB", "US"),
-            random.nextInt(2020, maxYear),
-            random.nextInt(18, 90),
+            ThreadLocalRandom.current().nextInt
+                    (2020, maxYear),
+            ThreadLocalRandom.current().nextInt
+                    (18, 90),
             getRandomVal("M","F","U"),
             random.nextBoolean(),
             courses);
 
     // Random course activity
     for (Course c: courses) {
-      int lecture = random.nextInt(1, c.lectureCount());
-      int year = random.nextInt(student.getYearEnrolled(), maxYear);
-      int month = random.nextInt(1, 13);
+      int lecture = ThreadLocalRandom.current().nextInt
+              (1, c.lectureCount());
+      int year = ThreadLocalRandom.current().nextInt
+              (student.getYearEnrolled(), maxYear);
+      int month = ThreadLocalRandom.current().nextInt
+              (1, 13);
       if (year == (maxYear - 1)) {
         if (month > LocalDate.now().getMonthValue()) {
           month = LocalDate.now().getMonthValue();
@@ -139,7 +143,6 @@ public class Student {
     }
     return student;
   }
-
 
   @Override
   public String toString() {
